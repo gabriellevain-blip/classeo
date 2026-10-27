@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résultats Conseil de Classe</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f2f4f7;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+h1,h2{
+    text-align:center;
+}
+
+input,select,textarea,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+button{
+    background:#0078d7;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#005a9e;
+}
+
+.hidden{
+    display:none;
+}
+
+.resultat{
+    margin-top:20px;
+    padding:15px;
+    background:#f5f5f5;
+    border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>Conseil de Classe</h1>
+
+<div id="connexion">
+
+<input type="text" id="code" placeholder="Entrez votre code">
+
+<button onclick="connexion()">
+Se connecter
+</button>
+
+</div>
+
+<div id="espaceEleve" class="hidden">
+
+<h2 id="nomEleve"></h2>
+
+<select id="trimestre" onchange="afficherResultat()">
+<option value="T1">Trimestre 1</option>
+<option value="T2">Trimestre 2</option>
+<option value="T3">Trimestre 3</option>
+</select>
+
+<div class="resultat" id="resultat"></div>
+
+<button onclick="deconnexion()">
+Déconnexion
+</button>
+
+</div>
+
+<div id="admin" class="hidden">
+
+<h2>Administration</h2>
+
+<button onclick="ajouterEleve()">
+Ajouter un élève
+</button>
+
+<select id="choixEleve"></select>
+
+<select id="choixTrimestre">
+<option value="T1">Trimestre 1</option>
+<option value="T2">Trimestre 2</option>
+<option value="T3">Trimestre 3</option>
+</select>
+
+<textarea id="texteResultat" rows="6"
+placeholder="Écrire le résultat du conseil de classe..."></textarea>
+
+<button onclick="enregistrer()">
+Enregistrer
+</button>
+
+<button onclick="deconnexion()">
+Déconnexion
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const ADMIN_CODE = "DELEGUE6E2026";
+
+let eleves = JSON.parse(localStorage.getItem("eleves")) || {
+
+    "LUCAS2026": {
+        nom: "Lucas",
+        T1: "Félicitations",
+        T2: "Encouragements",
+        T3: "Très bon trimestre"
+    }
+
+};
+
+localStorage.setItem(
+    "eleves",
+    JSON.stringify(eleves)
+);
+
+let utilisateurActuel = null;
+
+function connexion(){
+
+    const code =
+    document.getElementById("code").value.trim();
+
+    if(code === ADMIN_CODE){
+
+        document.getElementById("connexion")
+        .classList.add("hidden");
+
+        document.getElementById("admin")
+        .classList.remove("hidden");
+
+        chargerListeEleves();
+
+        return;
+    }
+
+    if(eleves[code]){
+
+        utilisateurActuel = code;
+
+        document.getElementById("connexion")
+        .classList.add("hidden");
+
+        document.getElementById("espaceEleve")
+        .classList.remove("hidden");
+
+        document.getElementById("nomEleve")
+        .innerText = "Bonjour " + eleves[code].nom;
+
+        afficherResultat();
+
+    } else {
+
+        alert("Code incorrect");
+
+    }
+
+}
+
+function afficherResultat(){
+
+    const trimestre =
+    document.getElementById("trimestre").value;
+
+    document.getElementById("resultat").innerHTML =
+    "<strong>Résultat :</strong><br><br>" +
+    eleves[utilisateurActuel][trimestre];
+
+}
+
+function chargerListeEleves(){
+
+    const liste =
+    document.getElementById("choixEleve");
+
+    liste.innerHTML = "";
+
+    for(let code in eleves){
+
+        liste.innerHTML += `
+        <option value="${code}">
+        ${eleves[code].nom} (${code})
+        </option>
+        `;
+    }
+
+}
+
+function ajouterEleve(){
+
+    const nom =
+    prompt("Nom de l'élève :");
+
+    if(!nom) return;
+
+    const code =
+    prompt("Code de connexion :");
+
+    if(!code) return;
+
+    eleves[code] = {
+
+        nom: nom,
+        T1: "",
+        T2: "",
+        T3: ""
+
+    };
+
+    localStorage.setItem(
+        "eleves",
+        JSON.stringify(eleves)
+    );
+
+    chargerListeEleves();
+
+    alert("Élève ajouté.");
+
+}
+
+function enregistrer(){
+
+    const eleve =
+    document.getElementById("choixEleve").value;
+
+    const trimestre =
+    document.getElementById("choixTrimestre").value;
+
+    const texte =
+    document.getElementById("texteResultat").value;
+
+    eleves[eleve][trimestre] = texte;
+
+    localStorage.setItem(
+        "eleves",
+        JSON.stringify(eleves)
+    );
+
+    alert("Résultat enregistré.");
+
+}
+
+function deconnexion(){
+
+    location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
