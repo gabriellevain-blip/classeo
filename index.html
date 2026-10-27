@@ -3,70 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Résultats Conseil de Classe</title>
+<title>Conseil de Classe</title>
 
 <style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f2f4f7;
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     padding:20px;
+    background:linear-gradient(135deg,#667eea,#764ba2);
 }
 
 .container{
-    max-width:800px;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,0.1);
+    width:100%;
+    max-width:850px;
+    padding:30px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 8px 32px rgba(0,0,0,0.25);
+    color:white;
+    animation:fadeIn .5s ease;
 }
 
-h1,h2{
+h1{
     text-align:center;
+    margin-bottom:25px;
+    font-size:2.2rem;
 }
 
-input,select,textarea,button{
+h2{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+input,
+select,
+textarea{
     width:100%;
     padding:12px;
     margin-top:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    box-sizing:border-box;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+    min-height:120px;
 }
 
 button{
-    background:#0078d7;
-    color:white;
+    width:100%;
+    padding:12px;
+    margin-top:10px;
     border:none;
+    border-radius:12px;
+    background:#4f46e5;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
     cursor:pointer;
+    transition:0.3s;
 }
 
 button:hover{
-    background:#005a9e;
+    background:#6366f1;
+    transform:translateY(-2px);
+}
+
+.resultat{
+    margin-top:20px;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(255,255,255,0.15);
+    min-height:120px;
 }
 
 .hidden{
     display:none;
 }
 
-.resultat{
-    margin-top:20px;
-    padding:15px;
-    background:#f5f5f5;
-    border-radius:10px;
+.info{
+    text-align:center;
+    margin-bottom:15px;
+    opacity:.9;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 </style>
+
 </head>
 <body>
 
 <div class="container">
 
-<h1>Conseil de Classe</h1>
+<h1>📚 Conseil de Classe</h1>
 
 <div id="connexion">
 
-<input type="text" id="code" placeholder="Entrez votre code">
+<p class="info">
+Entrez votre code pour accéder à votre espace.
+</p>
+
+<input type="text" id="code" placeholder="Code d'accès">
 
 <button onclick="connexion()">
 Se connecter
@@ -84,7 +144,9 @@ Se connecter
 <option value="T3">Trimestre 3</option>
 </select>
 
-<div class="resultat" id="resultat"></div>
+<div class="resultat" id="resultat">
+Sélectionnez un trimestre.
+</div>
 
 <button onclick="deconnexion()">
 Déconnexion
@@ -94,10 +156,10 @@ Déconnexion
 
 <div id="admin" class="hidden">
 
-<h2>Administration</h2>
+<h2>🔒 Administration</h2>
 
 <button onclick="ajouterEleve()">
-Ajouter un élève
+➕ Ajouter un élève
 </button>
 
 <select id="choixEleve"></select>
@@ -108,11 +170,17 @@ Ajouter un élève
 <option value="T3">Trimestre 3</option>
 </select>
 
-<textarea id="texteResultat" rows="6"
-placeholder="Écrire le résultat du conseil de classe..."></textarea>
+<textarea
+id="texteResultat"
+placeholder="Écrire le résultat du conseil de classe..."
+></textarea>
 
 <button onclick="enregistrer()">
-Enregistrer
+💾 Enregistrer
+</button>
+
+<button onclick="supprimerEleve()">
+🗑️ Supprimer l'élève
 </button>
 
 <button onclick="deconnexion()">
@@ -125,30 +193,28 @@ Déconnexion
 
 <script>
 
-const ADMIN_CODE = "DELEGUE6E2026";
+const ADMIN_CODE = "ADMIN2026";
 
-let eleves = JSON.parse(localStorage.getItem("eleves")) || {
-
-    "LUCAS2026": {
-        nom: "Lucas",
-        T1: "Félicitations",
-        T2: "Encouragements",
-        T3: "Très bon trimestre"
-    }
-
-};
-
-localStorage.setItem(
-    "eleves",
-    JSON.stringify(eleves)
-);
+let eleves =
+JSON.parse(localStorage.getItem("eleves")) || {};
 
 let utilisateurActuel = null;
+
+sauvegarderLocal();
+
+function sauvegarderLocal(){
+    localStorage.setItem(
+        "eleves",
+        JSON.stringify(eleves)
+    );
+}
 
 function connexion(){
 
     const code =
-    document.getElementById("code").value.trim();
+    document.getElementById("code")
+    .value
+    .trim();
 
     if(code === ADMIN_CODE){
 
@@ -174,16 +240,16 @@ function connexion(){
         .classList.remove("hidden");
 
         document.getElementById("nomEleve")
-        .innerText = "Bonjour " + eleves[code].nom;
+        .innerText =
+        "Bonjour " + eleves[code].nom;
 
         afficherResultat();
 
-    } else {
+    }else{
 
-        alert("Code incorrect");
+        alert("Code introuvable.");
 
     }
-
 }
 
 function afficherResultat(){
@@ -192,8 +258,8 @@ function afficherResultat(){
     document.getElementById("trimestre").value;
 
     document.getElementById("resultat").innerHTML =
-    "<strong>Résultat :</strong><br><br>" +
-    eleves[utilisateurActuel][trimestre];
+    eleves[utilisateurActuel][trimestre] ||
+    "Aucune information disponible.";
 
 }
 
@@ -209,10 +275,8 @@ function chargerListeEleves(){
         liste.innerHTML += `
         <option value="${code}">
         ${eleves[code].nom} (${code})
-        </option>
-        `;
+        </option>`;
     }
-
 }
 
 function ajouterEleve(){
@@ -227,24 +291,24 @@ function ajouterEleve(){
 
     if(!code) return;
 
-    eleves[code] = {
+    if(eleves[code]){
 
+        alert("Ce code existe déjà.");
+        return;
+
+    }
+
+    eleves[code] = {
         nom: nom,
         T1: "",
         T2: "",
         T3: ""
-
     };
 
-    localStorage.setItem(
-        "eleves",
-        JSON.stringify(eleves)
-    );
-
+    sauvegarderLocal();
     chargerListeEleves();
 
     alert("Élève ajouté.");
-
 }
 
 function enregistrer(){
@@ -258,15 +322,35 @@ function enregistrer(){
     const texte =
     document.getElementById("texteResultat").value;
 
+    if(!eleve){
+
+        alert("Ajoute d'abord un élève.");
+        return;
+    }
+
     eleves[eleve][trimestre] = texte;
 
-    localStorage.setItem(
-        "eleves",
-        JSON.stringify(eleves)
-    );
+    sauvegarderLocal();
 
     alert("Résultat enregistré.");
+}
 
+function supprimerEleve(){
+
+    const eleve =
+    document.getElementById("choixEleve").value;
+
+    if(!eleve) return;
+
+    if(confirm("Supprimer cet élève ?")){
+
+        delete eleves[eleve];
+
+        sauvegarderLocal();
+
+        chargerListeEleves();
+
+    }
 }
 
 function deconnexion(){
