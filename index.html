@@ -4,151 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Classeo</title>
-
 <link rel="icon" href="favicon.png">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
-    min-height:100vh;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+background:linear-gradient(135deg,#667eea,#764ba2);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
 }
-
 .logo{
-    position:fixed;
-    top:20px;
-    left:25px;
-    font-size:30px;
-    font-weight:800;
-    color:white;
-    text-shadow:0 2px 10px rgba(0,0,0,0.3);
+position:fixed;
+top:20px;
+left:25px;
+font-size:30px;
+font-weight:800;
+color:white;
 }
-
 .signature{
-    position:fixed;
-    bottom:10px;
-    right:15px;
-    font-size:10px;
-    color:rgba(255,255,255,0.8);
+position:fixed;
+bottom:10px;
+right:15px;
+font-size:10px;
+color:white;
+opacity:.8;
 }
-
 .container{
-    width:100%;
-    max-width:850px;
-    padding:30px;
-    border-radius:25px;
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(255,255,255,0.2);
-    box-shadow:0 8px 32px rgba(0,0,0,0.25);
-    color:white;
+width:100%;
+max-width:850px;
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(10px);
+padding:25px;
+border-radius:25px;
+color:white;
 }
-
-h1{
-    text-align:center;
-    margin-bottom:20px;
+input,select,textarea,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
 }
-
-h2{
-    text-align:center;
-    margin-bottom:15px;
-}
-
-h3{
-    margin-bottom:10px;
-}
-
-input,
-select,
-textarea{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:12px;
-    outline:none;
-}
-
-textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
 button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:12px;
-    background:#4f46e5;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
+background:#4f46e5;
+color:white;
+cursor:pointer;
+font-weight:bold;
 }
-
 button:hover{
-    background:#6366f1;
-    transform:translateY(-2px);
+background:#6366f1;
 }
-
-.hidden{
-    display:none;
-}
-
+.hidden{display:none}
 .card{
-    background:rgba(255,255,255,0.15);
-    border-radius:15px;
-    padding:20px;
-    margin-top:15px;
+background:rgba(255,255,255,.15);
+padding:15px;
+margin-top:15px;
+border-radius:15px;
 }
-
-.info{
-    text-align:center;
-    opacity:0.9;
-    margin-bottom:10px;
-}
+h1,h2{text-align:center;margin-bottom:15px}
 </style>
-
 </head>
 <body>
 
-<div class="logo">
-Classeo
-</div>
+<div class="logo">Classeo</div>
 
 <div class="container">
 
 <h1>📚 Conseil de Classe</h1>
 
-<div id="connexion">
+<div id="login">
 
-<p class="info">
-Entrez votre code d'accès
-</p>
-
-<input
-type="text"
-id="code"
-placeholder="Code d'accès">
+<input id="code" placeholder="Code d'accès">
 
 <button onclick="connexion()">
-Se connecter
+Connexion
 </button>
 
 </div>
 
-<div id="espaceEleve" class="hidden">
+<div id="eleve" class="hidden">
 
 <h2 id="nomEleve"></h2>
 
@@ -159,20 +96,16 @@ Se connecter
 </select>
 
 <div class="card">
-<h3>📄 Résultat personnel</h3>
-<p id="resultat">
-Aucune information.
-</p>
+<h3>Résultat personnel</h3>
+<p id="resultat"></p>
 </div>
 
 <div class="card">
-<h3>🏫 Appréciation générale de la classe</h3>
-<p id="appreciationClasseEleve">
-Aucune appréciation disponible.
-</p>
+<h3>🏫 Appréciation générale</h3>
+<p id="appreciationClasseEleve"></p>
 </div>
 
-<button onclick="deconnexion()">
+<button onclick="location.reload()">
 Déconnexion
 </button>
 
@@ -180,7 +113,7 @@ Déconnexion
 
 <div id="admin" class="hidden">
 
-<h2>🔒 Administration</h2>
+<h2>Administration</h2>
 
 <button onclick="ajouterEleve()">
 ➕ Ajouter un élève
@@ -194,35 +127,31 @@ Déconnexion
 <option value="T3">Trimestre 3</option>
 </select>
 
-<textarea
-id="texteResultat"
-placeholder="Résultat individuel..."
-></textarea>
+<textarea id="texteResultat"
+placeholder="Résultat individuel"></textarea>
 
-<button onclick="enregistrer()">
-💾 Enregistrer le résultat
-</button>
-
-<button onclick="supprimerEleve()">
-🗑️ Supprimer l'élève
+<button onclick="enregistrerResultat()">
+💾 Enregistrer résultat
 </button>
 
 <div class="card">
 
-<h3>🏫 Appréciation générale de la classe</h3>
+<h3>🏫 Appréciation générale</h3>
 
-<textarea
-id="appreciationClasseAdmin"
-placeholder="Appréciation générale..."
-></textarea>
+<textarea id="appreciationClasseAdmin"
+placeholder="Appréciation générale"></textarea>
 
 <button onclick="sauvegarderAppreciationClasse()">
-📢 Enregistrer l'appréciation générale
+📢 Enregistrer appréciation
 </button>
 
 </div>
 
-<button onclick="deconnexion()">
+<button onclick="supprimerEleve()">
+🗑️ Supprimer élève
+</button>
+
+<button onclick="location.reload()">
 Déconnexion
 </button>
 
@@ -230,258 +159,241 @@ Déconnexion
 
 </div>
 
-<div class="signature">
-@classeConnecte
-</div>
+<div class="signature">@classeConnecte</div>
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        const select =
-        document.getElementById(
-            "choixTrimestre"
-        );
-
-        if(select){
-
-            select.addEventListener(
-                "change",
-                function(){
-
-                    document.getElementById(
-                        "appreciationClasseAdmin"
-                    ).value =
-                    appreciationsClasse[this.value]
-                    || "";
-
-                }
-            );
-
-        }
-
-    }
-);
-    
 <script>
 
-const ADMIN_CODE = "ADMIN2026";
+const ADMIN_CODE="ADMIN2026";
 
-let eleves =
-JSON.parse(localStorage.getItem("eleves")) || {};
+let eleves=
+JSON.parse(localStorage.getItem("eleves"))||{};
 
-let appreciationsClasse =
-JSON.parse(
-    localStorage.getItem("appreciationsClasse")
-) || {
-    T1:"",
-    T2:"",
-    T3:""
+let appreciations=
+JSON.parse(localStorage.getItem("appreciations"))||{
+T1:"",
+T2:"",
+T3:""
 };
-let utilisateurActuel = null;
 
-sauvegarderLocal();
+let utilisateur=null;
 
-function sauvegarderLocal(){
-    localStorage.setItem(
-        "eleves",
-        JSON.stringify(eleves)
-    );
+function saveEleves(){
+localStorage.setItem(
+"eleves",
+JSON.stringify(eleves)
+);
+}
+
+function saveAppreciations(){
+localStorage.setItem(
+"appreciations",
+JSON.stringify(appreciations)
+);
 }
 
 function connexion(){
 
-    const code =
-    document.getElementById("code")
-    .value.trim();
+const code=
+document.getElementById("code").value.trim();
 
-    if(code === ADMIN_CODE){
+if(code===ADMIN_CODE){
 
-        document
-        .getElementById("connexion")
-        .classList.add("hidden");
+document.getElementById("login")
+.classList.add("hidden");
 
-        document
-        .getElementById("admin")
-        .classList.remove("hidden");
+document.getElementById("admin")
+.classList.remove("hidden");
 
-      const trimestre =
-document.getElementById("trimestre").value;
+chargerEleves();
 
-document
-.getElementById("appreciationClasseEleve")
-.innerText =
-appreciationsClasse[trimestre]
-|| "Aucune appréciation disponible.";
+document.getElementById(
+"appreciationClasseAdmin"
+).value=
+appreciations[
+document.getElementById(
+"choixTrimestre"
+).value
+]||"";
 
-        chargerListeEleves();
+return;
+}
 
-        return;
-    }
+if(eleves[code]){
 
-    if(eleves[code]){
+utilisateur=code;
 
-        utilisateurActuel = code;
+document.getElementById("login")
+.classList.add("hidden");
 
-        document
-        .getElementById("connexion")
-        .classList.add("hidden");
+document.getElementById("eleve")
+.classList.remove("hidden");
 
-        document
-        .getElementById("espaceEleve")
-        .classList.remove("hidden");
+document.getElementById("nomEleve")
+.innerText=
+"Bonjour "+eleves[code].nom;
 
-        document
-        .getElementById("nomEleve")
-        .innerText =
-        "Bonjour " + eleves[code].nom;
+afficherResultat();
 
-        document
-        .getElementById("appreciationClasseEleve")
-        .innerText =
-        appreciationClasse;
+}else{
+alert("Code incorrect");
+}
 
-        afficherResultat();
-
-    }
-    else{
-
-        alert("Code introuvable.");
-
-    }
 }
 
 function afficherResultat(){
 
-    const trimestre =
-    document.getElementById("trimestre").value;
+const t=
+document.getElementById(
+"trimestre"
+).value;
 
-    document
-    .getElementById("resultat")
-    .innerText =
-    eleves[utilisateurActuel][trimestre]
-    || "Aucune information disponible.";
+document.getElementById(
+"resultat"
+).innerText=
+eleves[utilisateur][t]||
+"Aucun résultat";
 
-    document
-    .getElementById("appreciationClasseEleve")
-    .innerText =
-    appreciationsClasse[trimestre]
-    || "Aucune appréciation disponible.";
+document.getElementById(
+"appreciationClasseEleve"
+).innerText=
+appreciations[t]||
+"Aucune appréciation";
 
-}
-function chargerListeEleves(){
-
-    const select =
-    document.getElementById("choixEleve");
-
-    select.innerHTML = "";
-
-    for(let code in eleves){
-
-        select.innerHTML += `
-        <option value="${code}">
-        ${eleves[code].nom} (${code})
-        </option>
-        `;
-    }
 }
 
 function ajouterEleve(){
 
-    const nom =
-    prompt("Nom de l'élève");
+const nom=
+prompt("Nom de l'élève");
 
-    if(!nom) return;
+if(!nom) return;
 
-    const code =
-    prompt("Code de connexion");
+const code=
+prompt("Code élève");
 
-    if(!code) return;
+if(!code) return;
 
-    if(eleves[code]){
-        alert("Ce code existe déjà");
-        return;
-    }
+eleves[code]={
+nom:nom,
+T1:"",
+T2:"",
+T3:""
+};
 
-    eleves[code] = {
-        nom:nom,
-        T1:"",
-        T2:"",
-        T3:""
-    };
+saveEleves();
+chargerEleves();
 
-    sauvegarderLocal();
-    chargerListeEleves();
-
-    alert("Élève ajouté");
 }
 
-function enregistrer(){
+function chargerEleves(){
 
-    const eleve =
-    document.getElementById("choixEleve").value;
+const select=
+document.getElementById(
+"choixEleve"
+);
 
-    if(!eleve){
-        alert("Ajoute un élève");
-        return;
-    }
+select.innerHTML="";
 
-    const trimestre =
-    document.getElementById("choixTrimestre").value;
+for(let code in eleves){
 
-    const texte =
-    document.getElementById("texteResultat").value;
+select.innerHTML+=`
+<option value="${code}">
+${eleves[code].nom}
+(${code})
+</option>
+`;
 
-    eleves[eleve][trimestre] = texte;
+}
 
-    sauvegarderLocal();
+}
 
-    alert("Résultat enregistré");
+function enregistrerResultat(){
+
+const eleve=
+document.getElementById(
+"choixEleve"
+).value;
+
+const trim=
+document.getElementById(
+"choixTrimestre"
+).value;
+
+const txt=
+document.getElementById(
+"texteResultat"
+).value;
+
+if(!eleve) return;
+
+eleves[eleve][trim]=txt;
+
+saveEleves();
+
+alert("Enregistré");
+
 }
 
 function supprimerEleve(){
 
-    const eleve =
-    document.getElementById("choixEleve").value;
+const eleve=
+document.getElementById(
+"choixEleve"
+).value;
 
-    if(!eleve) return;
+if(!eleve) return;
 
-    if(confirm("Supprimer cet élève ?")){
+delete eleves[eleve];
 
-        delete eleves[eleve];
+saveEleves();
 
-        sauvegarderLocal();
+chargerEleves();
 
-        chargerListeEleves();
-    }
 }
 
 function sauvegarderAppreciationClasse(){
 
-    const trimestre =
-    document.getElementById(
-        "choixTrimestre"
-    ).value;
+const trim=
+document.getElementById(
+"choixTrimestre"
+).value;
 
-    appreciationsClasse[trimestre] =
-    document.getElementById(
-        "appreciationClasseAdmin"
-    ).value;
+appreciations[trim]=
+document.getElementById(
+"appreciationClasseAdmin"
+).value;
 
-    localStorage.setItem(
-        "appreciationsClasse",
-        JSON.stringify(appreciationsClasse)
-    );
+saveAppreciations();
 
-    alert(
-        "Appréciation enregistrée pour le trimestre."
-    );
+alert("Appréciation enregistrée");
+
 }
 
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
 
-function deconnexion(){
-    location.reload();
+const select=
+document.getElementById(
+"choixTrimestre"
+);
+
+if(select){
+
+select.addEventListener(
+"change",
+function(){
+
+document.getElementById(
+"appreciationClasseAdmin"
+).value=
+appreciations[this.value]||"";
+
+});
+
 }
+
+});
 
 </script>
 
