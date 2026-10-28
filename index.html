@@ -234,6 +234,35 @@ Déconnexion
 @classeConnecte
 </div>
 
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const select =
+        document.getElementById(
+            "choixTrimestre"
+        );
+
+        if(select){
+
+            select.addEventListener(
+                "change",
+                function(){
+
+                    document.getElementById(
+                        "appreciationClasseAdmin"
+                    ).value =
+                    appreciationsClasse[this.value]
+                    || "";
+
+                }
+            );
+
+        }
+
+    }
+);
+    
 <script>
 
 const ADMIN_CODE = "ADMIN2026";
@@ -241,10 +270,14 @@ const ADMIN_CODE = "ADMIN2026";
 let eleves =
 JSON.parse(localStorage.getItem("eleves")) || {};
 
-let appreciationClasse =
-localStorage.getItem("appreciationClasse")
-|| "Aucune appréciation générale disponible.";
-
+let appreciationsClasse =
+JSON.parse(
+    localStorage.getItem("appreciationsClasse")
+) || {
+    T1:"",
+    T2:"",
+    T3:""
+};
 let utilisateurActuel = null;
 
 sauvegarderLocal();
@@ -272,9 +305,14 @@ function connexion(){
         .getElementById("admin")
         .classList.remove("hidden");
 
-        document
-        .getElementById("appreciationClasseAdmin")
-        .value = appreciationClasse;
+      const trimestre =
+document.getElementById("trimestre").value;
+
+document
+.getElementById("appreciationClasseEleve")
+.innerText =
+appreciationsClasse[trimestre]
+|| "Aucune appréciation disponible.";
 
         chargerListeEleves();
 
@@ -324,8 +362,13 @@ function afficherResultat(){
     eleves[utilisateurActuel][trimestre]
     || "Aucune information disponible.";
 
-}
+    document
+    .getElementById("appreciationClasseEleve")
+    .innerText =
+    appreciationsClasse[trimestre]
+    || "Aucune appréciation disponible.";
 
+}
 function chargerListeEleves(){
 
     const select =
@@ -415,18 +458,26 @@ function supprimerEleve(){
 
 function sauvegarderAppreciationClasse(){
 
-    appreciationClasse =
+    const trimestre =
+    document.getElementById(
+        "choixTrimestre"
+    ).value;
+
+    appreciationsClasse[trimestre] =
     document.getElementById(
         "appreciationClasseAdmin"
     ).value;
 
     localStorage.setItem(
-        "appreciationClasse",
-        appreciationClasse
+        "appreciationsClasse",
+        JSON.stringify(appreciationsClasse)
     );
 
-    alert("Appréciation générale enregistrée");
+    alert(
+        "Appréciation enregistrée pour le trimestre."
+    );
 }
+
 
 function deconnexion(){
     location.reload();
