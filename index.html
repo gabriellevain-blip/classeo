@@ -436,12 +436,12 @@ chargerEleves();
 
 async function chargerEleves(){
 
-    const liste =
+    const select =
     document.getElementById(
         "choixEleve"
     );
 
-    liste.innerHTML = "";
+    select.innerHTML = "";
 
     const snapshot =
     await getDocs(
@@ -456,15 +456,15 @@ async function chargerEleves(){
         const eleve =
         docu.data();
 
-        liste.innerHTML += `
-        <option value="${docu.id}">
-        ${eleve.nom}
-        (${docu.id})
-        </option>
+        select.innerHTML += `
+            <option value="${docu.id}">
+                ${eleve.nom} (${docu.id})
+            </option>
         `;
 
     });
 
+}
 }
 function enregistrerResultat(){
 
