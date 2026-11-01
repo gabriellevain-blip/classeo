@@ -88,10 +88,23 @@ import { initializeApp } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
-getMessaging,
-getToken
-} from
+  getMessaging,
+  getToken
+}
+from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  collection,
+  deleteDoc
+}
+from
+"https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey:"AIzaSyD2X3tHdu9BBG6wiN7poyvsDWfrj95JlgU",
@@ -104,6 +117,17 @@ appId:"1:371736144457:web:4539955acfa23071a12d98"
 
 const app = initializeApp(firebaseConfig);
 
+const db =
+getFirestore(app);
+
+window.db = db;
+window.doc = doc;
+window.setDoc = setDoc;
+window.getDoc = getDoc;
+window.getDocs = getDocs;
+window.collection = collection;
+window.deleteDoc = deleteDoc;
+  
 window.messaging =
 getMessaging(app);
 
@@ -331,7 +355,27 @@ return;
 
 }
 
-if(eleves[code]){
+const eleveRef =
+await getDoc(
+    doc(db,
+    "eleves",
+    code)
+);
+
+if(eleveRef.exists()){
+
+    const eleve =
+    eleveRef.data();
+
+    utilisateur = code;
+
+    document
+    .getElementById("nomEleve")
+    .innerText =
+    "Bonjour " +
+    eleve.nom;
+
+}
 
 utilisateur = code;
 
@@ -401,27 +445,38 @@ chargerEleves();
 
 }
 
-function chargerEleves(){
+async function chargerEleves(){
 
-const select =
-document.getElementById(
-"choixEleve"
-);
+    const liste =
+    document.getElementById(
+        "choixEleve"
+    );
 
-select.innerHTML = "";
+    liste.innerHTML = "";
 
-for(const code in eleves){
+    const snapshot =
+    await getDocs(
+        collection(
+            db,
+            "eleves"
+        )
+    );
 
-select.innerHTML +=
-`<option value="${code}">
-${eleves[code].nom}
-(${code})
-</option>`;
+    snapshot.forEach((docu)=>{
+
+        const eleve =
+        docu.data();
+
+        liste.innerHTML += `
+        <option value="${docu.id}">
+        ${eleve.nom}
+        (${docu.id})
+        </option>
+        `;
+
+    });
 
 }
-
-}
-
 function enregistrerResultat(){
 
 const eleve =
