@@ -410,27 +410,35 @@ appreciations[t]
 
 }
 
-function ajouterEleve(){
+async function ajouterEleve(){
 
-const nom =
-prompt("Nom élève");
+    const nom =
+    prompt("Nom élève");
 
-if(!nom) return;
+    if(!nom) return;
 
-const code =
-prompt("Code élève");
+    const code =
+    prompt("Code élève");
 
-if(!code) return;
+    if(!code) return;
 
-eleves[code] = {
-nom,
-T1:"",
-T2:"",
-T3:""
-};
+    await setDoc(
+        doc(
+            db,
+            "eleves",
+            code
+        ),
+        {
+            nom: nom,
+            T1: "",
+            T2: "",
+            T3: ""
+        }
+    );
 
-saveEleves();
-chargerEleves();
+    alert("Élève ajouté");
+
+    chargerEleves();
 
 }
 
