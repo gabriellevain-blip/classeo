@@ -7,7 +7,13 @@
 <link rel="icon" href="favicon.png">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
 body{
 background:linear-gradient(135deg,#667eea,#764ba2);
 min-height:100vh;
@@ -16,6 +22,7 @@ justify-content:center;
 align-items:center;
 padding:20px;
 }
+
 .logo{
 position:fixed;
 top:20px;
@@ -24,6 +31,7 @@ font-size:30px;
 font-weight:800;
 color:white;
 }
+
 .signature{
 position:fixed;
 bottom:10px;
@@ -32,6 +40,7 @@ font-size:10px;
 color:white;
 opacity:.8;
 }
+
 .container{
 width:100%;
 max-width:850px;
@@ -41,6 +50,7 @@ padding:25px;
 border-radius:25px;
 color:white;
 }
+
 input,select,textarea,button{
 width:100%;
 padding:12px;
@@ -48,28 +58,66 @@ margin-top:10px;
 border:none;
 border-radius:10px;
 }
+
 button{
 background:#4f46e5;
 color:white;
-cursor:pointer;
 font-weight:bold;
+cursor:pointer;
 }
+
 button:hover{
 background:#6366f1;
 }
-.hidden{display:none}
+
+.hidden{
+display:none;
+}
+
 .card{
 background:rgba(255,255,255,.15);
 padding:15px;
 margin-top:15px;
 border-radius:15px;
 }
-h1,h2{text-align:center;margin-bottom:15px}
 </style>
+
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+import {
+getMessaging,
+getToken
+} from
+"https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyD2X3tHdu9BBG6wiN7poyvsDWfrj95JlgU",
+authDomain:"classeo-53f9d.firebaseapp.com",
+projectId:"classeo-53f9d",
+storageBucket:"classeo-53f9d.firebasestorage.app",
+messagingSenderId:"371736144457",
+appId:"1:371736144457:web:4539955acfa23071a12d98"
+};
+
+const app = initializeApp(firebaseConfig);
+
+window.messaging =
+getMessaging(app);
+
+window.getToken =
+getToken;
+
+</script>
+
 </head>
 <body>
 
-<div class="logo">Classeo</div>
+<div class="logo">
+Classeo
+</div>
 
 <div class="container">
 
@@ -77,7 +125,9 @@ h1,h2{text-align:center;margin-bottom:15px}
 
 <div id="login">
 
-<input id="code" placeholder="Code d'accès">
+<input
+id="code"
+placeholder="Code d'accès">
 
 <button onclick="connexion()">
 Connexion
@@ -89,10 +139,21 @@ Connexion
 
 <h2 id="nomEleve"></h2>
 
-<select id="trimestre" onchange="afficherResultat()">
-<option value="T1">Trimestre 1</option>
-<option value="T2">Trimestre 2</option>
-<option value="T3">Trimestre 3</option>
+<select id="trimestre"
+onchange="afficherResultat()">
+
+<option value="T1">
+Trimestre 1
+</option>
+
+<option value="T2">
+Trimestre 2
+</option>
+
+<option value="T3">
+Trimestre 3
+</option>
+
 </select>
 
 <div class="card">
@@ -104,6 +165,10 @@ Connexion
 <h3>🏫 Appréciation générale</h3>
 <p id="appreciationClasseEleve"></p>
 </div>
+
+<button onclick="activerNotifications()">
+🔔 Me notifier lors de l'arrivée des résultats
+</button>
 
 <button onclick="location.reload()">
 Déconnexion
@@ -127,8 +192,10 @@ Déconnexion
 <option value="T3">Trimestre 3</option>
 </select>
 
-<textarea id="texteResultat"
-placeholder="Résultat individuel"></textarea>
+<textarea
+id="texteResultat"
+placeholder="Résultat individuel">
+</textarea>
 
 <button onclick="enregistrerResultat()">
 💾 Enregistrer résultat
@@ -138,10 +205,13 @@ placeholder="Résultat individuel"></textarea>
 
 <h3>🏫 Appréciation générale</h3>
 
-<textarea id="appreciationClasseAdmin"
-placeholder="Appréciation générale"></textarea>
+<textarea
+id="appreciationClasseAdmin"
+placeholder="Appréciation générale">
+</textarea>
 
-<button onclick="sauvegarderAppreciationClasse()">
+<button
+onclick="sauvegarderAppreciationClasse()">
 📢 Enregistrer appréciation
 </button>
 
@@ -159,23 +229,29 @@ Déconnexion
 
 </div>
 
-<div class="signature">@classeConnecte</div>
+<div class="signature">
+@classeConnecte
+</div>
 
 <script>
 
-const ADMIN_CODE="ADMIN2026";
+const ADMIN_CODE = "ADMIN2026";
 
-let eleves=
-JSON.parse(localStorage.getItem("eleves"))||{};
+let eleves =
+JSON.parse(
+localStorage.getItem("eleves")
+) || {};
 
-let appreciations=
-JSON.parse(localStorage.getItem("appreciations"))||{
+let appreciations =
+JSON.parse(
+localStorage.getItem("appreciations")
+) || {
 T1:"",
 T2:"",
 T3:""
 };
 
-let utilisateur=null;
+let utilisateur = null;
 
 function saveEleves(){
 localStorage.setItem(
@@ -191,12 +267,57 @@ JSON.stringify(appreciations)
 );
 }
 
+async function activerNotifications(){
+
+const permission =
+await Notification.requestPermission();
+
+if(permission !== "granted"){
+alert("Notifications refusées");
+return;
+}
+
+try{
+
+const token =
+await window.getToken(
+window.messaging,
+{
+vapidKey:
+"BAGYMaEGvunfhweGtpYcG0WqN-Q97q46x0MUK1m2J1GVyoAT4aKdaSdLzN7MbWqhCZe2mNQFLTuwwPQJYVoO5mo"
+}
+);
+
+console.log(token);
+
+localStorage.setItem(
+"fcmToken",
+token
+);
+
+alert(
+"✅ Notifications activées !"
+);
+
+}catch(e){
+
+console.error(e);
+
+alert(
+"Erreur notifications"
+);
+
+}
+
+}
+
 function connexion(){
 
-const code=
-document.getElementById("code").value.trim();
+const code =
+document.getElementById("code")
+.value.trim();
 
-if(code===ADMIN_CODE){
+if(code === ADMIN_CODE){
 
 document.getElementById("login")
 .classList.add("hidden");
@@ -206,21 +327,13 @@ document.getElementById("admin")
 
 chargerEleves();
 
-document.getElementById(
-"appreciationClasseAdmin"
-).value=
-appreciations[
-document.getElementById(
-"choixTrimestre"
-).value
-]||"";
-
 return;
+
 }
 
 if(eleves[code]){
 
-utilisateur=code;
+utilisateur = code;
 
 document.getElementById("login")
 .classList.add("hidden");
@@ -229,52 +342,55 @@ document.getElementById("eleve")
 .classList.remove("hidden");
 
 document.getElementById("nomEleve")
-.innerText=
-"Bonjour "+eleves[code].nom;
+.innerText =
+"Bonjour " +
+eleves[code].nom;
 
 afficherResultat();
 
 }else{
+
 alert("Code incorrect");
+
 }
 
 }
 
 function afficherResultat(){
 
-const t=
+const t =
 document.getElementById(
 "trimestre"
 ).value;
 
 document.getElementById(
 "resultat"
-).innerText=
-eleves[utilisateur][t]||
-"Aucun résultat";
+).innerText =
+eleves[utilisateur][t]
+|| "Aucun résultat";
 
 document.getElementById(
 "appreciationClasseEleve"
-).innerText=
-appreciations[t]||
-"Aucune appréciation";
+).innerText =
+appreciations[t]
+|| "Aucune appréciation";
 
 }
 
 function ajouterEleve(){
 
-const nom=
-prompt("Nom de l'élève");
+const nom =
+prompt("Nom élève");
 
 if(!nom) return;
 
-const code=
+const code =
 prompt("Code élève");
 
 if(!code) return;
 
-eleves[code]={
-nom:nom,
+eleves[code] = {
+nom,
 T1:"",
 T2:"",
 T3:""
@@ -287,21 +403,20 @@ chargerEleves();
 
 function chargerEleves(){
 
-const select=
+const select =
 document.getElementById(
 "choixEleve"
 );
 
-select.innerHTML="";
+select.innerHTML = "";
 
-for(let code in eleves){
+for(const code in eleves){
 
-select.innerHTML+=`
-<option value="${code}">
+select.innerHTML +=
+`<option value="${code}">
 ${eleves[code].nom}
 (${code})
-</option>
-`;
+</option>`;
 
 }
 
@@ -309,24 +424,23 @@ ${eleves[code].nom}
 
 function enregistrerResultat(){
 
-const eleve=
+const eleve =
 document.getElementById(
 "choixEleve"
 ).value;
 
-const trim=
+const trim =
 document.getElementById(
 "choixTrimestre"
 ).value;
 
-const txt=
+const texte =
 document.getElementById(
 "texteResultat"
 ).value;
 
-if(!eleve) return;
-
-eleves[eleve][trim]=txt;
+eleves[eleve][trim] =
+texte;
 
 saveEleves();
 
@@ -336,12 +450,10 @@ alert("Enregistré");
 
 function supprimerEleve(){
 
-const eleve=
+const eleve =
 document.getElementById(
 "choixEleve"
 ).value;
-
-if(!eleve) return;
 
 delete eleves[eleve];
 
@@ -353,47 +465,28 @@ chargerEleves();
 
 function sauvegarderAppreciationClasse(){
 
-const trim=
+const trim =
 document.getElementById(
 "choixTrimestre"
 ).value;
 
-appreciations[trim]=
+appreciations[trim] =
 document.getElementById(
 "appreciationClasseAdmin"
 ).value;
 
 saveAppreciations();
 
-alert("Appréciation enregistrée");
-
-}
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-const select=
-document.getElementById(
-"choixTrimestre"
+alert(
+"Appréciation enregistrée"
 );
 
-if(select){
-
-select.addEventListener(
-"change",
-function(){
-
-document.getElementById(
-"appreciationClasseAdmin"
-).value=
-appreciations[this.value]||"";
-
-});
-
 }
 
-});
+</script>
+
+</body>
+</html>
 
 </script>
 
