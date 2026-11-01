@@ -394,23 +394,38 @@ async function afficherResultat(){
 
     await chargerAppreciations();
 
+    const t =
+    document.getElementById(
+        "trimestre"
+    ).value;
 
-const t =
-document.getElementById(
-"trimestre"
-).value;
+    const eleveRef =
+    await getDoc(
+        doc(
+            db,
+            "eleves",
+            utilisateur
+        )
+    );
 
-document.getElementById(
-"resultat"
-).innerText =
-eleves[utilisateur][t]
-|| "Aucun résultat";
+    if(eleveRef.exists()){
 
-document.getElementById(
-"appreciationClasseEleve"
-).innerText =
-appreciations[t]
-|| "Aucune appréciation";
+        const eleve =
+        eleveRef.data();
+
+        document.getElementById(
+            "resultat"
+        ).innerText =
+        eleve[t] ||
+        "Aucun résultat";
+
+    }
+
+    document.getElementById(
+        "appreciationClasseEleve"
+    ).innerText =
+    appreciations[t] ||
+    "Aucune appréciation";
 
 }
 
@@ -477,29 +492,38 @@ async function chargerEleves(){
     });
 
 }
-function enregistrerResultat(){
+async function enregistrerResultat(){
 
-const eleve =
-document.getElementById(
-"choixEleve"
-).value;
+    const eleve =
+    document.getElementById(
+        "choixEleve"
+    ).value;
 
-const trim =
-document.getElementById(
-"choixTrimestre"
-).value;
+    const trim =
+    document.getElementById(
+        "choixTrimestre"
+    ).value;
 
-const texte =
-document.getElementById(
-"texteResultat"
-).value;
+    const texte =
+    document.getElementById(
+        "texteResultat"
+    ).value;
 
-eleves[eleve][trim] =
-texte;
+    await setDoc(
+        doc(
+            db,
+            "eleves",
+            eleve
+        ),
+        {
+            [trim]: texte
+        },
+        {
+            merge: true
+        }
+    );
 
-saveEleves();
-
-alert("Enregistré");
+    alert("Résultat enregistré");
 
 }
 
