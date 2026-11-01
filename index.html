@@ -390,9 +390,10 @@ async function connexion(){
 
 }
 
-await chargerAppreciations();
-  
-function afficherResultat(){
+async function afficherResultat(){
+
+    await chargerAppreciations();
+
 
 const t =
 document.getElementById(
