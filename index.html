@@ -337,69 +337,58 @@ alert(
 
 async function connexion(){
 
-const code =
-document.getElementById("code")
-.value.trim();
+    const code =
+    document.getElementById("code")
+    .value.trim();
 
-if(code === ADMIN_CODE){
+    if(code === ADMIN_CODE){
 
-document.getElementById("login")
-.classList.add("hidden");
+        document.getElementById("login")
+        .classList.add("hidden");
 
-document.getElementById("admin")
-.classList.remove("hidden");
+        document.getElementById("admin")
+        .classList.remove("hidden");
 
-chargerEleves();
+        chargerEleves();
 
-return;
+        return;
+    }
 
-}
+    const eleveRef =
+    await getDoc(
+        doc(
+            db,
+            "eleves",
+            code
+        )
+    );
 
-const eleveRef =
-await getDoc(
-    doc(db,
-    "eleves",
-    code)
-);
+    if(eleveRef.exists()){
 
-if(eleveRef.exists()){
+        const eleve =
+        eleveRef.data();
 
-    const eleve =
-    eleveRef.data();
+        utilisateur = code;
 
-    utilisateur = code;
+        document.getElementById("login")
+        .classList.add("hidden");
 
-    document
-    .getElementById("nomEleve")
-    .innerText =
-    "Bonjour " +
-    eleve.nom;
+        document.getElementById("eleve")
+        .classList.remove("hidden");
 
-}
+        document.getElementById("nomEleve")
+        .innerText =
+        "Bonjour " + eleve.nom;
 
-utilisateur = code;
+        afficherResultat();
 
-document.getElementById("login")
-.classList.add("hidden");
+    }else{
 
-document.getElementById("eleve")
-.classList.remove("hidden");
+        alert("Code incorrect");
 
-document.getElementById("nomEleve")
-.innerText =
-"Bonjour " +
-eleves[code].nom;
-
-afficherResultat();
-
-}else{
-
-alert("Code incorrect");
+    }
 
 }
-
-}
-
 function afficherResultat(){
 
 const t =
