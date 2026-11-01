@@ -389,6 +389,9 @@ async function connexion(){
     }
 
 }
+
+await chargerAppreciations();
+  
 function afficherResultat(){
 
 const t =
@@ -514,26 +517,61 @@ chargerEleves();
 
 }
 
-function sauvegarderAppreciationClasse(){
+async function sauvegarderAppreciationClasse(){
 
-const trim =
-document.getElementById(
-"choixTrimestre"
-).value;
+    const trim =
+    document.getElementById(
+        "choixTrimestre"
+    ).value;
 
-appreciations[trim] =
-document.getElementById(
-"appreciationClasseAdmin"
-).value;
+    const texte =
+    document.getElementById(
+        "appreciationClasseAdmin"
+    ).value;
 
-saveAppreciations();
+    await setDoc(
+        doc(
+            db,
+            "appreciations",
+            trim
+        ),
+        {
+            texte: texte
+        }
+    );
 
-alert(
-"Appréciation enregistrée"
-);
+    alert(
+        "Appréciation enregistrée"
+    );
 
 }
 
+async function chargerAppreciations(){
+
+    const T1 =
+    await getDoc(
+        doc(db,"appreciations","T1")
+    );
+
+    const T2 =
+    await getDoc(
+        doc(db,"appreciations","T2")
+    );
+
+    const T3 =
+    await getDoc(
+        doc(db,"appreciations","T3")
+    );
+
+    appreciations = {
+        T1: T1.exists() ? T1.data().texte : "",
+        T2: T2.exists() ? T2.data().texte : "",
+        T3: T3.exists() ? T3.data().texte : ""
+    };
+
+}
+
+  
 </script>
 
 </body>
