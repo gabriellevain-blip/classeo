@@ -528,20 +528,7 @@ async function chargerEleves(){
 
 }
 
-    snapshot.forEach((docu)=>{
 
-        const eleve =
-        docu.data();
-
-        select.innerHTML += `
-            <option value="${docu.id}">
-                ${eleve.nom} (${docu.id})
-            </option>
-        `;
-
-    });
-
-}
 async function enregistrerResultat(){
 
     const eleve =
@@ -674,16 +661,14 @@ async function chargerResultatAdmin(){
         const data =
         eleveRef.data();
 
-       document.getElementById(
-"appreciationClasseAdmin"
-).value =
-appreciations[this.value] || "";
-
-});
+        document.getElementById(
+            "texteResultat"
+        ).value =
+        data[trimestre] || "";
+    }
 
 }
-
-});
+  
 </script>
 
 </body>
