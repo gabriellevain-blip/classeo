@@ -210,6 +210,20 @@ Déconnexion
 
 <select id="choixEleve"></select>
 
+  <select
+id="choixEleve"
+onchange="chargerResultatAdmin()">
+</select>
+
+<select
+id="choixTrimestre"
+onchange="chargerResultatAdmin()">
+<select
+id="choixTrimestre"
+onchange="
+chargerResultatAdmin();
+chargerAppreciations();
+">
 <select id="choixTrimestre">
 <option value="T1">Trimestre 1</option>
 <option value="T2">Trimestre 2</option>
@@ -478,6 +492,37 @@ async function chargerEleves(){
         )
     );
 
+    let listeEleves = [];
+
+    snapshot.forEach((docu)=>{
+
+        listeEleves.push({
+            id: docu.id,
+            ...docu.data()
+        });
+
+    });
+
+    listeEleves.sort((a,b)=>
+        a.nom.localeCompare(
+            b.nom,
+            "fr",
+            {sensitivity:"base"}
+        )
+    );
+
+    listeEleves.forEach((eleve)=>{
+
+        select.innerHTML += `
+            <option value="${eleve.id}">
+                ${eleve.nom} (${eleve.id})
+            </option>
+        `;
+
+    });
+
+}
+
     snapshot.forEach((docu)=>{
 
         const eleve =
@@ -573,26 +618,63 @@ async function sauvegarderAppreciationClasse(){
 
 async function chargerAppreciations(){
 
-    const T1 =
+    const trim =
+    document.getElementById(
+        "choixTrimestre"
+    ).value;
+
+    const docRef =
     await getDoc(
-        doc(db,"appreciations","T1")
+        doc(
+            db,
+            "appreciations",
+            trim
+        )
     );
 
-    const T2 =
+    document.getElementById(
+        "appreciationClasseAdmin"
+    ).value =
+    docRef.exists()
+    ? docRef.data().texte
+    : "";
+
+}
+
+async function chargerResultatAdmin(){
+
+    const eleve =
+    document.getElementById(
+        "choixEleve"
+    ).value;
+
+    const trimestre =
+    document.getElementById(
+        "choixTrimestre"
+    ).value;
+
+    if(!eleve) return;
+
+    const eleveRef =
     await getDoc(
-        doc(db,"appreciations","T2")
+        doc(
+            db,
+            "eleves",
+            eleve
+        )
     );
 
-    const T3 =
-    await getDoc(
-        doc(db,"appreciations","T3")
-    );
+    if(eleveRef.exists()){
 
-    appreciations = {
-        T1: T1.exists() ? T1.data().texte : "",
-        T2: T2.exists() ? T2.data().texte : "",
-        T3: T3.exists() ? T3.data().texte : ""
-    };
+        const data =
+        eleveRef.data();
+
+        document.getElementById(
+            "texteResultat"
+        ).value =
+        data[trimestre] || "";
+
+    }
 
 }
 
