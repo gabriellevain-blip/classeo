@@ -208,8 +208,6 @@ Déconnexion
 ➕ Ajouter un élève
 </button>
 
-<select id="choixEleve"></select>
-
  <select
 id="choixEleve"
 onchange="chargerResultatAdmin()">
@@ -345,14 +343,17 @@ alert(
 
 }catch(e){
 
-console.error(e);
+    console.error(e);
 
-alert(
-"Erreur notifications"
-);
+    alert(
+    "Erreur notifications"
+    );
+
+}
 
 }
     
+async function connexion(){
 
 async function connexion(){
 
