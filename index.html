@@ -210,26 +210,30 @@ Déconnexion
 
 <select id="choixEleve"></select>
 
-  <select
+ <select
 id="choixEleve"
 onchange="chargerResultatAdmin()">
 </select>
 
 <select
 id="choixTrimestre"
-onchange="chargerResultatAdmin()">
-<select
-id="choixTrimestre"
 onchange="
 chargerResultatAdmin();
 chargerAppreciations();
 ">
-<select id="choixTrimestre">
-<option value="T1">Trimestre 1</option>
-<option value="T2">Trimestre 2</option>
-<option value="T3">Trimestre 3</option>
-</select>
+    <option value="T1">
+        Trimestre 1
+    </option>
 
+    <option value="T2">
+        Trimestre 2
+    </option>
+
+    <option value="T3">
+        Trimestre 3
+    </option>
+</select>
+  
 <textarea
 id="texteResultat"
 placeholder="Résultat individuel">
@@ -346,8 +350,7 @@ alert(
 );
 
 }
-
-}
+    
 
 async function connexion(){
 
